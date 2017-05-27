@@ -19,7 +19,12 @@ class ViewController: UIViewController {
     @IBOutlet weak var showResult: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.loadData(IPModel.self).map { $0?.city   }
+        viewModel.loadData(IPModel.self)
+            .catchError({ (error) -> Observable<IPModel?> in
+                print(error.localizedDescription)
+                return Observable.empty()
+            })
+            .map { $0?.city   }
             .bindTo(self.showResult.rx.text)
             .addDisposableTo(disposeBag)
         // Do any additional setup after loading the view, typically from a nib.

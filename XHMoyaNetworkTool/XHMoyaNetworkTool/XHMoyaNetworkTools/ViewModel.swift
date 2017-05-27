@@ -17,6 +17,11 @@ class ViewModel {
         return provider.XHOffLineCacheRequest(token: .github)
         .debug()
         .distinctUntilChanged()
+        .catchError({ (error) -> Observable<Response> in
+                //捕获错误，不然离线访问会导致Binding error to UI，可以再此显示HUD等操作
+                print(error.localizedDescription)
+                return Observable.empty()
+        })
         .mapResponseToObj(T.self)
     }
 }

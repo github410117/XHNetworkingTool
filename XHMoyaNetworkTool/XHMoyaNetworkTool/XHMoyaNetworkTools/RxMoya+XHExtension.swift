@@ -15,7 +15,11 @@ extension RxMoyaProvider {
     func XHOffLineCacheRequest(token: Target) -> Observable<Moya.Response> {
         return Observable.create({[weak self] (observer) -> Disposable in
             //拼接成为数据库的key
-            let key = token.baseURL.absoluteString + token.path + (self?.toJSONString(dict: token.parameters))!
+            var key = token.baseURL.absoluteString + token.path
+            //            var key = token.baseURL.absoluteString + token.path
+            if token.parameters != nil {
+                key += (self?.toJSONString(dict: token.parameters))!
+            }
             
             //建立Realm
             let realm = try! Realm()
