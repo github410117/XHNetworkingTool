@@ -12,9 +12,11 @@ import Moya
 
 class ViewModel {
     private let provider = RxMoyaProvider<ApiManager>()
-    
+   
     func loadData<T: Mapable>(_ model: T.Type) -> Observable<T?> {
         return provider.XHOffLineCacheRequest(token: .github)
+        .subscribeOn(ConcurrentDispatchQueueScheduler.init(qos: .default))
+        .observeOn(MainScheduler.instance)
         .debug()
         .distinctUntilChanged()
         .catchError({ (error) -> Observable<Response> in
